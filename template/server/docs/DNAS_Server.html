@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>SHOUTcast DNAS Server 2.4.7</title>
+<title>SHOUTcast DNAS Server 2.5.1</title>
 <style type="text/css">body,table,textarea,pre{font-family:Arial,Helvetica,sans-serif;font-size:10pt;}.header{background-color:rgb(66,164,189);color:white;padding:1px;}a:link,a:visited{color:#2762AE;text-decoration:none;}a:hover{text-decoration:underline;}ul{list-style-type:none;text-align:left;}ul.n{list-style-type:square;text-align:left;}pre{background-color:#F0F0F0;border:1px solid #CCCCCC;font-weight:bold;padding:5px 10px 5px 10px;display:inline-block;margin-top:0;margin-bottom:0;margin-left:25px;}pre.src{border:0;font-family:monospace;background-color:white;}span.b{font-weight:normal;color:#3366CC;}span.c{font-style:italic;font-weight:normal;color:#808080;}span.v{font-weight:normal;}span.r{font-weight:normal;color:#000066;}span.s{font-weight:normal;color:#FF0000;}#toc{border:1px solid #CCCCCC;padding:0 5px 0 5px;text-align: center;}p.ver{font-size:85%;margin-top:-1.5em;text-align:center;}.thumb{float:right;clear:both;margin-left:10px;margin-top:5px;margin-bottom:10px;width:202px;}.serv{float:right;clear:both;margin-left:10px;margin-top:5px;margin-bottom:10px;width:252px;}.pages{white-space:nowrap;padding:0 25px;}.pages2{white-space:nowrap;padding:5px 10px;border:1px solid #CCCCCC;text-align:center;}.pages3{white-space:nowrap;padding:5px 10px;border:1px solid #CCCCCC;}img{width:200px;}img.serv{width:250px;}img.thumb{border:1px solid #CCCCCC;}hr{border:0;background-color:#CCCCCC;height:1px;}</style>
 <script type="text/javascript">if(window.showTocToggle){var tocShowText="show";var tocHideText="hide";showTocToggle()}function showTocToggle(){if(document.createTextNode){var linkHolder=document.getElementById('toctitle');if(!linkHolder){return}var outerSpan=document.createElement('span');outerSpan.className='toctoggle';var toggleLink=document.createElement('a');toggleLink.id='togglelink';toggleLink.className='internal';toggleLink.href='javascript:toggleToc()';toggleLink.appendChild(document.createTextNode(tocHideText));outerSpan.appendChild(document.createTextNode('['));outerSpan.appendChild(toggleLink);outerSpan.appendChild(document.createTextNode(']'));linkHolder.appendChild(document.createTextNode(' '));linkHolder.appendChild(outerSpan);var cookiePos=document.cookie.indexOf("serv_hidetoc=");if(cookiePos>-1&&document.cookie.charAt(cookiePos+13)==1){toggleToc()}}}function changeText(el,newText){if(el.innerText){el.innerText=newText}else if(el.firstChild&&el.firstChild.nodeValue){el.firstChild.nodeValue=newText}}function toggleToc(){var toc=document.getElementById('toc').getElementsByTagName('ul')[0];var first=document.getElementById('first');var toggleLink=document.getElementById('togglelink');if(toc&&toggleLink&&toc.style.display=='none'){changeText(toggleLink,tocHideText);document.getElementById('toc').style.cssFloat='left';toc.style.display='block';first.style.marginLeft='315px';document.cookie="serv_hidetoc=0"}else{changeText(toggleLink,tocShowText);document.getElementById('toc').style.cssFloat='';toc.style.display='none';first.style.marginLeft='';document.cookie="serv_hidetoc=1"}}window.onload=function(){var cookiePos=document.cookie.indexOf("serv_hidetoc=");if(cookiePos>-1&&document.cookie.charAt(cookiePos+13)==1){toggleToc()}}</script>
 </head>
 <div class="header">
-<h1 align="center">SHOUTcast DNAS Server 2.4.7</h1>
-<p class="ver">(Last Updated 25 March 2015)</p>
+<h1 align="center">SHOUTcast DNAS Server 2.5.1</h1>
+<p class="ver">(Last Updated 30 Sep 2016)</p>
 </div>
 <table id="toc" style="float:left;margin-right:40px;margin-bottom:5px;"><tbody><tr><td>
 <div id="toctitle"><b>Contents</b> <span class="toctoggle">[<a id="togglelink" class="internal" href="javascript:toggleToc()">hide</a>]</span></div>
@@ -509,7 +509,7 @@ method (see <a href="#Administration_Pages">section 5.1.2</a>) or update to use 
 <p><b>relayconnectretries</b> : Specify the number of times relays are attempted to be connected to if it is initially unable to connect <i>[Default = 0]</i></p>
 <pre>A value of zero means there is no limit on the number
 of attempts made to reconnect to the relay source.</pre>
-<p>If a maximum bitrate is specified on the stream either via the maxbitrate or streammaxbitrate configuration options (see <a href="#Stream_Configuration">section 4.12</a>) and an invalid bitrate is detected, only one attempt is made to connect to the relay source. A manual re-connect can be started.</p>
+<p>If a minimum or maximum bitrate is specified on the stream either via the minbitrate / maxbitrate or streamminbitrate / streammaxbitrate configuration options (see <a href="#Stream_Configuration">section 4.12</a>) and an invalid bitrate is detected, only one attempt is made to connect to the relay source. A manual re-connect can be started.</p>
 <p><b>maxhttpredirects</b> : Specify the maximum number of times we can redirect when relaying <i>[Default = 5]</i></p>
 <p><br><i>&lt;Legacy Options&gt;</i></p>
 <p><b>relayport</b> : Port of the source to use for the relay <i>[Default = 80]</i></p>
@@ -537,6 +537,10 @@ folder already exists as the DNAS server will not attempt to the create the fold
 <pre>When enabled you will need to ensure that any sources have their
 configuration details setup to match those in the configuration file,
 and in particular the 'streamid' and 'password' values.</pre>
+<p><b>minbitrate</b> : Specify the minimum bitrate allowed in bits per second for streams connected to the server which is enforced when the source connection is made.<i>[Default = &lt;no&nbsp;value&gt;]</i></p>
+<pre>If this is not specified then no check of the bitrate is made as the source
+connects. This is used in conjunction with 'streamminbitrate' to enable
+per-stream as well as global control of the bitrate of source connections.</pre>
 <p><b>maxbitrate</b> : Specify the maximum bitrate allowed in bits per second for streams connected to the server which is enforced when the source connection is made.<i>[Default = &lt;no&nbsp;value&gt;]</i></p>
 <pre>If this is not specified then no check of the bitrate is made as the source
 connects. This is used in conjunction with 'streammaxbitrate' to enable
@@ -615,6 +619,7 @@ for all known streams.
 If set to zero, no song history will be preserved for the specified stream and the
 played?sid=# page for the stream will be hidden from view on the header of the
 /index.html?sid=# page.</pre>
+<p><b>streamminbitrate</b> : Specify the minimum bitrate allowed in bits per second of the stream which is enforced when the source connection is made. If this is not specified then 'minbitrate' will be used as appropriate to its value.</p>
 <p><b>streammaxbitrate</b> : Specify the maximum bitrate allowed in bits per second of the stream which is enforced when the source connection is made. If this is not specified then 'maxbitrate' will be used as appropriate to its value.</p>
 <p><b>streamhidestats</b> : Specify control of which public pages can be viewed for the stream.</p>
 <p>This can accept the following parameters:</p>
@@ -1147,6 +1152,7 @@ show the playing file's artwork (if available).</pre>
 </tr><tr>
 <td class="pages">songhistory</td>
 <td class="pages">backuploop</td>
+<td>minbitrate</td>
 <td></td>
 </tr><tr>
 <td colspan="3" align="center"><br><b>&lt;&lt; stream specific options &gt;&gt;</b><td>
@@ -1191,6 +1197,7 @@ show the playing file's artwork (if available).</pre>
 </tr><tr>
 <td class="pages">cdnmaster</td>
 <td class="pages">cdnslave</td>
+<td>streamminbitrate</td>
 <td></td>
 </tr><tr>
 <td colspan="3"><br>all of the debugging configuration options (see section 4.3 for all options)</td>

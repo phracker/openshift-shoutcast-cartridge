@@ -196,7 +196,6 @@ var LastPage = 1;
 var Password;
 var AdminPassword;
 var PortBase;
-var PublicServer;
 var MaxUser;
 
 function SetDefaults() {
@@ -205,7 +204,7 @@ function SetDefaults() {
 	CurrentPage = readCookie("CurrentPage");
 	if(CurrentPage == null || (CurrentPage >= (2+ConfigStreams) && ((LastPage != 3 && CurrentPage != 4) || (LastPage == CurrentPage)))) CurrentPage = 1;
 	else if(LastPage == 3 && CurrentPage == 4) {
-		$('results').innerHTML = "Successfully saved settings to the config file (sc_serv.conf).<br><br>Click '<b>Run Server</b>' to run the server with the specified settings or '<b>Exit</b>' to close this<br>instance of the server (run without a configuration file to use the new settings).<br><br><input class=\"submit\" type=\"button\" value=\"Run Server\" id=\"runserver\"/>&nbsp;&nbsp;<input class=\"submit\" type=\"button\" value=\"Exit\" id=\"exit\"/>";
+		$('results').innerHTML = "Successfully saved settings to the config file (sc_serv.conf).<br><br>Click '<b>Run Server</b>' to run the server with the specified settings or '<b>Exit</b>' to close this instance of the server (run without a configuration file to use the new settings).<br><br><input class=\"submit\" type=\"button\" value=\"Run Server\" id=\"runserver\"/>&nbsp;&nbsp;<input class=\"submit\" type=\"button\" value=\"Exit\" id=\"exit\"/>";
 		AETFC($("exit"),onExitButtonClicked);
 		AETFC($("runserver"),onRunServerButtonClicked);
 	}
@@ -217,7 +216,6 @@ function SetDefaults() {
 	AdminPassword="";SetObjectValueID("adminpassword",AdminPassword);
 	PortBase=8000;SetObjectValueID("portbase",PortBase);
 	MaxUser=512;SetObjectValueID("maxuser",MaxUser);
-	PublicServer=0;SetObjectValueID("publicserver",PublicServer);
 }
 
 var NumOfStreamsInput;
@@ -228,7 +226,6 @@ var PasswordInput;
 var AdminPasswordInput;
 var PortBaseInput;
 var MaxUserInput;
-var PublicServerSelect;
 
 var EndPointPathInputArray=new Array(NumOfStreams);
 var EndPointMaxUserInputArray = new Array(NumOfStreams);
@@ -248,11 +245,6 @@ function DoObjShowHide(Show, Obj) {
 		Obj.style.visibility="hidden";
 		Obj.style.display="none";
 	}
-}
-
-function onPublicServerSelectChanged() {
-	PublicServer=(PublicServerSelect.value)*1;
-	SetObjCookie(PublicServerSelect,"publicserver");
 }
 
 function onPortBaseInputChanged() {
@@ -407,13 +399,6 @@ function DoUpdate(mode) {
 		output += encodeURIComponent("adminpassword="+AdminPassword)+NL;
 		output += OutIntRaw("portbase",PortBase,8000);
 		output += OutIntRaw("maxuser",MaxUser,512);
-		if(PublicServer > 0) {
-			output += encodeURIComponent("publicserver=");
-			switch(PublicServer) {
-				case 1: output += "always"+NL; break;
-				case 2: output += "never"+NL; break;
-			}
-		}
 		if(ConfigStreams && NumOfStreams > 0) {
 			output += encodeURIComponent("requirestreamconfigs=1")+NL;
 			for(var i=0;i<NumOfStreams;i++) {
@@ -446,14 +431,6 @@ function DoUpdate(mode) {
 		config += "Server Port: <b>"+PortBase+"</b><br>";
 		config += "Maximum Listeners: <b>"+MaxUser+"</b></fieldset><br>";
 
-		config += "<fieldset style=\"text-align:center;width:inherit;\"><legend class=\"titlespan\"><b>Directory Listing</b></legend><b>";
-		switch(PublicServer) {
-			case 0: config += "Set by source"; break;
-			case 1: config += "Listed (Public)"; break;
-			case 2: config += "Not listed (Private)"; break;
-		}
-
-		config += "</b></fieldset><br>";
 		config += "<fieldset style=\"text-align:center;width:inherit;\"><legend class=\"titlespan\"><b>";
 		if(ConfigStreams) {
 			if(NumOfStreams == 1) {
@@ -461,7 +438,7 @@ function DoUpdate(mode) {
 			} else {
 				config += NumOfStreams+" Configured Streams";
 			}
-			config += "</b></legend>Source connection(s) are only allowed to be made with the server as long as the required details received match with what has been specified for the stream.<br><br>All source connection(s) made against non-configured streams will be rejected.";
+			config += "</b></legend>Source connection(s) are only allowed to be made to the server as long as the required details received match with what has been specified for the stream.<br><br>Source connection(s) made on non-configured streams will be rejected.";
 			config += "<br><br><table width=\"100%\">"
 			for(var i=0;i<NumOfStreams;i++) {
 				var stream="";
@@ -564,16 +541,16 @@ function MultiPointSpanUpdate() {
 	for(var i=0;i<NumOfStreams;i++) {
 		var rindex=i+1;
 
-		str+="<tr><td style=\"white-space:nowrap;\"><fieldset style=\"width:inherit;\">";
+		str+="<tr><td><fieldset style=\"width:inherit;\">";
 		str+="<legend class=\"titlespan\">&nbsp;&nbsp;<b>Stream #"+rindex+"</b>&nbsp;&nbsp;</legend>";
 		str+="<table><tr><td class=\"ConfigTableDescTD\">";
 
 		var naid="EndPoint"+(rindex)+"PasswordInput";
-		str+="Source Password</td><td><input size=\"36\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
+		str+="Source Password</td><td><input size=\"20\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
 		str+="</td></tr><tr><td class=\"ConfigTableDescTD\">";
 
 		var naid="EndPoint"+(rindex)+"AdminInput";
-		str+="Admin password</td><td><input size=\"36\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
+		str+="Admin password</td><td><input size=\"20\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
 		str+="</td></tr><tr><td class=\"ConfigTableDescTD\">";
 
 		var naid="EndPoint"+(rindex)+"MaxUserInput";
@@ -581,11 +558,11 @@ function MultiPointSpanUpdate() {
 		str+="</td></tr><tr><td class=\"ConfigTableDescTD\">";
 
 		var naid="EndPoint"+(rindex)+"PathInput";
-		str+="Listener Stream Path</td><td><input size=\"36\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
+		str+="Listener Stream Path</td><td><input size=\"20\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
 		str+="</td></tr><tr><td class=\"ConfigTableDescTD\">";
 
 		var naid="EndPoint"+(rindex)+"AuthHashInput";
-		str+="Stream Authhash</td><td><input maxlength=\"20\" size=\"36\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
+		str+="Stream Authhash</td><td><input maxlength=\"20\" size=\"20\" name=\""+naid+"\" id=\""+naid+"\"/><br/>";
 		str+="</td></tr></table></fieldset></td></tr>";
 	}
 
@@ -726,7 +703,6 @@ function DoInit() {
 	AdminPassword = GetObjCookie(AdminPasswordInput = register("adminpassword",onPasswordInputsChanged));
 	PortBase = GetObjCookie(PortBaseInput = register("portbase",onPortBaseInputChanged));
 	MaxUser = GetObjCookie(MaxUserInput = register("maxuser",onMaxUserInputChanged));
-	PublicServer = GetObjCookie(PublicServerSelect = register("publicserver",onPublicServerSelectChanged));
 	ConfigStreams = GetObjCookie(ConfigStreamsCheckBox = register("streams",onConfigStreamsButtonClicked));
 	NumOfStreams = GetObjCookie(NumOfStreamsInput = register("num_streams",onStreamsTotalChanged));
 
@@ -745,7 +721,6 @@ function DoInit() {
 	changePage(2);
 	onPasswordInputsChanged();
 	onConfigStreamsButtonClicked();
-	onPublicServerSelectChanged();
 	onStreamsTotalChanged(1);
 
 	DoHelpUpdate(null);
@@ -821,7 +796,7 @@ function sendConfigDetails() {
 	xmlhttp.onreadystatechange=function(){
 		if(xmlhttp.readyState==4){
 			if(xmlhttp.status==200){
-				$('results').innerHTML = "Successfully saved settings to the config file (sc_serv.conf).<br><br>Click '<b>Run Server</b>' to run the server with the specified settings or '<b>Exit</b>' to close this<br>instance of the server (run without a configuration file to use the new settings).<br><br><input class=\"submit\" type=\"button\" value=\"Run Server\" id=\"runserver\"/>&nbsp;&nbsp;<input class=\"submit\" type=\"button\" value=\"Exit\" id=\"exit\"/>";
+				$('results').innerHTML = "Successfully saved settings to the config file (sc_serv.conf).<br><br>Click '<b>Run Server</b>' to run the server with the specified settings or '<b>Exit</b>' to close this instance of the server (run without a configuration file to use the new settings).<br><br><input class=\"submit\" type=\"button\" value=\"Run Server\" id=\"runserver\"/>&nbsp;&nbsp;<input class=\"submit\" type=\"button\" value=\"Exit\" id=\"exit\"/>";
 				AETFC($("exit"),onExitButtonClicked);
 				AETFC($("runserver"),onRunServerButtonClicked);
 			}

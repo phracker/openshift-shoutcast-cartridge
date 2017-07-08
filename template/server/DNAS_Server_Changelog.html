@@ -8,11 +8,13 @@
 </head>
 <div class="header">
 <h1 align="center">SHOUTcast DNAS Server Changelog</h1>
-<p class="ver">(Last Updated 31 March 2015)</p>
+<p class="ver">(Last Updated 28 Jan 2017)</p>
 </div>
 <table id="toc" style="float:left;margin-right:40px;margin-bottom:5px;"><tbody><tr><td>
 <div id="toctitle"><b>Contents</b> <span class="toctoggle">[<a id="togglelink" class="internal" href="javascript:toggleToc()">hide</a>]</span></div>
 <ul style="padding-left:0px;">
+<li><a href="#723">2.5.1 Build 724</a></li>
+<li><a href="#700">2.4.8 Build 700</a></li>
 <li><a href="#256">2.4.7 Build 256</a></li>
 <li><a href="#167">2.4.2 Build 167 / 168</a></li>
 <li><a href="#165">2.4.1 Build 164 / 165</a></li>
@@ -33,9 +35,307 @@
 </ul>
 </td></tr></tbody></table>
 
-<a name="256"></a><h3>2.4.7 Build 256</h3>
+<a name="724"></a><h3>2.5.1 Build 724</h3>
 <hr>
 <ul class="n" id="first" style="margin-left:180px;">
+<li>Fix libcurl i686 32bit lib build (ssl was broken)
+<li>Avoid forced icy metadata for Roku and WMP
+<li>Purge adverts not used in some time, frees up memory for re-use
+<li>Adjust automatic cpu scaler
+<li>Drop to HTTP/1.0 in most responses
+<li>Use correct IP for stats engine, xml stats were wrong for XFF
+<li>Improve buffer handling
+<li>Dropping pragma/expires header
+</ul>
+<h3>2.5.1 Build 723</h3>
+<hr>
+<ul class="n" id="first" style="margin-left:180px;">
+<li>Added FLV containerisation support for MP3 and AAC streams (add ?type=.flv to compatible stream urls to use)</li>
+<li>Added support for sending title updates to Tunein for DNAS+ streams</li>
+<li>Added 'minbitrate' and 'streamminbitrate' options to complement the 'maxbitrate' and 'streammaxbitrate' options</li>
+<li>Added 'streambitrate' alias for setting both 'streammaxbitrate' and 'streamminbitrate' to enforce a single allowed bitrate</li>
+<li>Added the HTML5 player to /index.html?sid=0 page for all compatible streams (currently only MP3 streams)</li>
+<li>Added 'type=x' parameter to force specific connection handling (e.g. type=http or type=.flv or type=sc1 or type=sc2 or type=html) irrespective of what the connection may indicate from header and user-agent values)</li>
+<li>Added unlimited listener support when setting 'maxuser=0' to allow any listener connection (the server will still need to be able to support the number of requests when this is enabled to avoid streaming issues)</li>
+<li>Added frame syncing support on all source inputs (direct and relay) to filter out bad stream data</li>
+<li>Added 'dns' mappings of the 'ip' config options (e.g. publicdns -> publicip)</li>
+<li>Added modes to enable / disable only the source and only the listener debugging options via mode=debug?option=source and mode=debug?option=listener respectively</li>
+<li>Added StreamNext='xxx' to the SHOUTcast 1.x-style in-stream title updates (will need listener software updates to be able to make use of this)</li>
+<li>Added samplerate reporting on the appropriate stream pages and log output</li>
+<li>Added rate limiting on all listener handlers to help reduce listeners getting too far ahead or adverts being resumed from at the in-correct position (or playing the filler as well as the adverts)</li>
+<li>Added 'ratelimit' to enable control of the frame rate limiting feature (set ratelimit=0 to disable if it causes issues)</li>
+<li>Added 'adtestfile', 'adtestfileloop', 'streamadtestfile', 'streamadtestfileloop', and related handling to aid in testing advert triggers will work (see documentation for details)</li>
+<li>Added 'adminfile' support which allows for restricting unwanted access to admin.cgi to only valid IP / hostnames added intto the 'sc_serv.admin' file (see documentation for details)</li>
+<li>Added 'forceshortsends' support which allows for mimicking restricted network output which can occassionally be helpful for debugging</li>
+<li>Added 'adminnowrap' support to allow for disabling some of the mobile friendly CSS / HTML changes for the stream admin page and its display of the listener list</li>
+<li>Added a sanitised configuration settings view mode for the server administrator to aid in checking that the DNAS is using the settings it is meant to be using</li>
+<li>Added /currentmetadata?sid=# which is a more accessible version of the admin.cgi mode=viewxml or mode=viewjson and page=5 requests for getting the extended stream metadata</li>
+<li>Added support to make better use of the X-Forwarded-For HTTP header (use usexff=0 to disable this change) which is helpful if all listeners appear to be connected from the local machine due to front-facing services</li>
+<li>Added proper handling of HTTP HEAD requests to resolve a number of issues with unexpected listener connections and failed source connections</li>
+<li>Added a 'kick duplicates' option to the stream administrator page to make it easier to kick duplicate connections from the same user agent and address (see documentation for how to use this in a script)</li>
+<li>Added support for direct HTTP sources (e.g. Icecast based sources) to be accepted when providing MP3 and AAC based stream content)</li>
+<li>Added support for SHOUTcast 1.x sources to be accepted on 'portbase' and not 'portbase+1' as per the SHOUTcast 1.x protocol specification which makes it possible for all sources (1.x and 2.x) to be accepted on a single port instead of needing two ports (see documentation for details and limitations of this mode)<br><br></li>
+
+<li>Changed authhash management to improve integration with the Radionomy platform and services now being offered for SHOUTcast broadcasters</li>
+<li>Changed the default CSS / HTML output to adjustements to work better on mobile devices / small screens including consolidating and removing some of the information on the summary pages</li>
+<li>Changed the YP update to be able to do a full re-add of the stream on update incase of YP-side issues on add</li>
+<li>Changed the YP update handling to be more dynamic to aid with remote clustering fixes</li>
+<li>Changed to use a new scheduler which allows the server to be more flexible and allows the rate limiting support to work correctly</li>
+<li>Changed to require a key press if running normally (non-daemon and non-service modes) when a major issue occurs of the server cannot be run</li>
+<li>Changed 1.x source handling to check the password earlier in the connection steps which allows for quicker checking and setup of the source or rejection as applicable</li>
+<li>Changed the the existing playing and admin metadata responses to include extended metadata (if available)</li>
+<li>Changed the tailing mode to match the 1.x DNAS so it will now only show the log output from when opening the tailing view</li>
+<li>Changed title update to clarify why certain title updates are being rejected</li>
+<li>Changed the way that advert triggers are detected and processed to increase the reliability of advert triggers being actioned</li>
+<li>Changed some of the page icons to appear more visible on dark backgrounds</li>
+<li>Changed log output to only show 'Terminating listeners...' if there are listeners</li>
+<li>Changed some more internal data sctructures to provide additional memory reductions on per-listener basis</li>
+<li>Changed applicable timeout handling to go through a common handler which now ensures that per-stream overrides on the timeouts are correctly applied</li>
+<li>Changed to indicate CDN mode on backup relay connections</li>
+<li>Changed the internal handling of the config items to better handle large stream ids so as to save memory if not using sequential streamids (which speeds up config handling as well as potentially saving a lot of memory)</li>
+<li>Changed to check and abort starting the DNAS if no source passwords are specified</li>
+<li>Changed some of the log start-up wording messages</li>
+<li>Changed the Flash Policy Server to generate the response immediately to reduce time to provide a response</li>
+<li>Changed to not check for &lt;policy-file-request/&gt; if the Flash Policy Server is not enabled on the port</li>
+<li>Changed the HTTP handler to reduce the time to process requests when first processing the request</li>
+<li>Changed to show the bitrate of the skipped files to help with diagnosing why a file was skipped</li>
+<li>Changed handling of relay and direct 1.x sources to improve consistency between them and reduce the time to start a relay connection</li>
+<li>Changed the 2.x relay handling to reduce time to setup the relay connection as well as reducing memory for the connection setup</li>
+<li>Changed file / advert checking to also check the samplerate to improve reliabity of file / advert inserts</li>
+<li>Changed the stream login / logout options to have 'Stream' in front of them to make it clearer vs the main Server actions</li>
+<li>Changed to look for SSLv2 / SSLv3 / TLSv1.x connections and abort them as we do not support HTTPS connections and this was causing false source connection attempts</li>
+<li>Changed debugging output to make it easier to see the full filepath of the control files being used</li>
+<li>Changed when the YP 'add' is issued to prevent it spamming the metrics system if the connnection quickly fails (e.g. when running a relay that cannot connect to the source)</li>
+<li>Changed SHOUTcast 1.x and HTTP listener connection handling to be done separately which allows us to provide an optimised HTTP experience than the prior shared handling</li>
+<li>Changed the debugging options admin page to make it easier to enable groups of options and find other related usage changes</li>
+<li>Changed the help / documentation links to use a more complete page which better details information</li>
+<li>Changed the Windows version to make use of a modified pthread-win32 to make internal handling more consistent between OS platforms</li>
+<li>Changed the 'kick all' button to span across all of 'kick' actions and to respond to clicks anywhere in the element</li>
+<li>Changed the advert status to now be in it's own column instead of being in the 'connected duration' column</li>
+<li>Changed the 'sources' page to show the direct stream urls of the configured streams</li>
+<li>Changed error message output to be more consistent between the platform versions</li>
+<li>Changed Windows Vista+ usage to better scale for larger listener numbers compared to using the Windows XP and prior mode</li>
+<li>Changed the listener duration output to be a more condensed version (more like the 1.x DNAS which is better for mobile)</li>
+<li>Changed the ultravox creation to reduce the processing overhead when creating such data</li>
+<li>Changed admin.cgi?mode=history to provide XML and JSON responses like the /played(.html) method can provide</li>
+<li>Changed to ignore empty icy-icq, icy-irc and icy-aim headers which some older sources send and which could cause the source to be incorrectly rejected</li>
+<li>Changed to allow empty icy-url headers to improve legacy source connection support</li>
+<li>Changed the stream admin page to load the current listener list asynchronously instead of waiting for all of the details to load at once</li>
+<li>Changed the HTML5 player on the DNAS pages to force http mode</li>
+<li>Changed the HTML5 player on the DNAS pages to be hidden if the browser being used does not support such playback of the stream(s)</li>
+<li>Changed to use HTTPS for all communication the DNAS needs to make</li>
+<li>Changed to show the user agent in the banned connection log messages</li>
+<li>Changed to not save 'streamid' when re-writing or editing the config file as the DNAS is able to work this out without needing the option to be present (unlike with older 2.x releases)</li>
+<li>Changed to about direct source connections earlier on if the source password is incorrect than was previously being done<br><br></li>
+
+<li>Fixed handling of XML title updates with escaped characters leading to unexpected title update failures</li>
+<li>Fixed issues with excessive CPU usage due to connections to the DNAS not having enough data ready to be provided or received</li>
+<li>Fixed unexpected CPU usage when under low or no listener load (most noticeable on resource limited setups)</li>
+<li>Fixed all reproducible memory and object leaks (mainly against the advert implementation)</li>
+<li>Fixed the wrong streampath being used if the streampath config option is set but is left empty</li>
+<li>Fixed streampath generation for the HTML5 player on the DNAS pages and for any listener / playlist requests (to improve listener / player compatibility)</li>
+<li>Fixed Roku playback issues (affects 2.4.x)</li>
+<li>Fixed Winamp 5.6+ playback issues (affects 2.4.7)</li>
+<li>Fixed peaklisteners not being shown when there are no active listeners on the server admin page</li>
+<li>Fixed metrics handling issues which were causing corrupted reponses to be sent (breaking account statistics)</li>
+<li>Fixed advert updates being re-tried too often and not following the server side update interval</li>
+<li>Fixed advert update pulls failing randomly after the first pull attempt</li>
+<li>Fixed advert group not being updated in all cases for the existing listeners</li>
+<li>Fixed advert groups not being displayed on the admin page in all situations</li>
+<li>Fixed no message being shown on the advert groups if there are no known advert groups (affects 2.4.7)</li>
+<li>Fixed adverts for SHOUTcast 1.x listeners not always firing if no data could be sent</li>
+<li>Fixed lock-up for SHOUTcast 1.x listener when providing adverts and a title update needs to be sent</li>
+<li>Fixed invalid HTTP requests attempting to be handled as a source connection</li>
+<li>Fixed advert groups not being updated on the admin page unless some internal checks had been made</li>
+<li>Fixed issue with the updater repeatedly re-downloading the update (2.4.3 / 2.4.7 beta issue)</li>
+<li>Fixed /admin.cgi?mode=viewxml and /admin.cgi?mode=viewjson requests without a page parameter not being allowed for requests using the stream source password (resolves a 1.x DNAS compatibility issue)</li>
+<li>Fixed configuration file writing not saving correctly with non-sequential stream configurations</li>
+<li>Fixed default 'pidfile' generation not creating the file in the correct directory when run as a daemon (affects 2.4.x)</li>
+<li>Fixed some debug messages from showing when they should not appear in non-debug mode</li>
+<li>Fixed passwords containing the # character being incorrectly rejected due to the multi-1.x source support (affects 2.4.7)</li>
+<li>Fixed the edit config handler not being able to create the backup config file on Windows (affects 2.4.x)</li>
+<li>Fixed the receive and send buffers not being correctly limited in all cases to help prevent overflow issues</li>
+<li>Fixed some of the supporting resource methods not providing compressed version of the resource as needed</li>
+<li>Fixed ID3v1.x tags not being correctly stripped from intro / backup / adtest files</li>
+<li>Fixed streampath allowing /listen to be used which would cause failed stream playback as a playlist would be provided instead of the stream (due to /listen being a reserved url</li>
+<li>Fixed the YP connection tester causing listener add metrics requests to be sent</li>
+<li>Fixed a number of scenarios where aborting a pending source relay connection would not terminate correctly</li>
+<li>Fixed some path resolution issues where accented characters are in the file path</li>
+<li>Fixed listeners already connected to a stream before it has obtained information from the YP not being reported to the metrics system and not being applied to advert groups if applicable</li>
+<li>Fixed admincssfile not being re-loaded correctly on configuarion file reload</li>
+<li>Fixed random crash on accessing the log view</li>
+<li>Fixed random crash on closing when trying to write a log message and the logger has already been stopped</li>
+<li>Fixed error reporting if there is an issue with configuration file backup and edit actions</li>
+<li>Fixed HTTPS urls not being processed correctly causing broken urls on some of the server pages</li>
+<li>Fixed handling of 1.x sources and relays which do not provide bitrate information so it is now determined from the stream audio data as needed</li>
+<li>Fixed url reported when doing a YP url change not being correctly updated</li>
+<li>Fixed advert triggers not always working Ultravox and manual XML title updates</li>
+<li>Fixed AAC kbps calculations not being correct in some situations</li>
+<li>Fixed a number of streaming related issues if 'short sends' are occurring (which primarily could lead to skips and data loss)</li>
+<li>Fixed SHOUTcast 2.x sources reporting their received bandwidth total against SHOUTcast 2.x relays</li>
+<li>Fixed some issues with the user agent management page</li>
+<li>Fixed trying to ban listeners by user agent with an empty user agents not being handled correctly</li>
+<li>Fixed 'http://' being incorrectly added onto some of the 1.x style 'StreamUrl' metadata values</li>
+<li>Fixed a number of title update verification issues which were causing title corruption with extended character titles (affects 2.4.x)</li>
+<li>Fixed the configuration file re-write option not working correctly in some scenarios</li>
+<li>Fixed reported random locking issues being seen on some setups causing the DNAS to appear like it has crashed but is still running and just in a locked state<br><br></li>
+
+<li>Updated the streampath filtering</li>
+<li>Updated title filtering mappings</li>
+<li>Updated to the latest cacert.pem</li>
+<li>Updated to libcurl 7.49.1</li>
+<li>Updated to OpenSSL 1.0.2h<br><br></li>
+
+<li>Other code cleanup, minor bug fixes, re-ordering common cases to be checked first, processing reductions, page cleanups and anything else to improve stability, useability and responsiveness of the DNAS server</li>
+<li>A plethora of monetization-related, stability and other general fixes</li>
+</ul>
+
+<a name="700"></a><h3>2.4.8 Build 700</h3>
+<hr>
+<ul class="n">
+<li>Added FLV containerisation support for MP3 and AAC streams (add ?type=.flv to compatible stream urls to use)</li>
+<li>Added support for sending title updates to Tunein for DNAS+ streams</li>
+<li>Added 'minbitrate' and 'streamminbitrate' options to complement the 'maxbitrate' and 'streammaxbitrate' options</li>
+<li>Added 'streambitrate' alias for setting both 'streammaxbitrate' and 'streamminbitrate' to enforce a single allowed bitrate</li>
+<li>Added the HTML5 player to /index.html?sid=0 page for all compatible streams (currently only MP3 streams)</li>
+<li>Added 'type=x' parameter to force specific connection handling (e.g. type=http or type=.flv or type=sc1 or type=sc2 or type=html) irrespective of what the connection may indicate from header and user-agent values)</li>
+<li>Added unlimited listener support when setting 'maxuser=0' to allow any listener connection (the server will still need to be able to support the number of requests when this is enabled to avoid streaming issues)</li>
+<li>Added frame syncing support on all source inputs (direct and relay) to filter out bad stream data</li>
+<li>Added 'dns' mappings of the 'ip' config options (e.g. publicdns -> publicip)</li>
+<li>Added modes to enable / disable only the source and only the listener debugging options via mode=debug?option=source and mode=debug?option=listener respectively</li>
+<li>Added StreamNext='xxx' to the SHOUTcast 1.x-style in-stream title updates (will need listener software updates to be able to make use of this)</li>
+<li>Added samplerate reporting on the appropriate stream pages and log output</li>
+<li>Added rate limiting on all listener handlers to help reduce listeners getting too far ahead or adverts being resumed from at the in-correct position (or playing the filler as well as the adverts)</li>
+<li>Added 'ratelimit' to enable control of the frame rate limiting feature (set ratelimit=0 to disable if it causes issues)</li>
+<li>Added 'adtestfile', 'adtestfileloop', 'streamadtestfile', 'streamadtestfileloop', and related handling to aid in testing advert triggers will work (see documentation for details)</li>
+<li>Added 'adminfile' support which allows for restricting unwanted access to admin.cgi to only valid IP / hostnames added intto the 'sc_serv.admin' file (see documentation for details)</li>
+<li>Added 'forceshortsends' support which allows for mimicking restricted network output which can occassionally be helpful for debugging</li>
+<li>Added 'adminnowrap' support to allow for disabling some of the mobile friendly CSS / HTML changes for the stream admin page and its display of the listener list</li>
+<li>Added a sanitised configuration settings view mode for the server administrator to aid in checking that the DNAS is using the settings it is meant to be using</li>
+<li>Added /currentmetadata?sid=# which is a more accessible version of the admin.cgi mode=viewxml or mode=viewjson and page=5 requests for getting the extended stream metadata</li>
+<li>Added support to make better use of the X-Forwarded-For HTTP header (use usexff=0 to disable this change) which is helpful if all listeners appear to be connected from the local machine due to front-facing services</li>
+<li>Added proper handling of HTTP HEAD requests to resolve a number of issues with unexpected listener connections and failed source connections</li>
+<li>Added a 'kick duplicates' option to the stream administrator page to make it easier to kick duplicate connections from the same user agent and address (see documentation for how to use this in a script)</li>
+<li>Added support for direct HTTP sources (e.g. Icecast based sources) to be accepted when providing MP3 and AAC based stream content)</li>
+<li>Added support for SHOUTcast 1.x sources to be accepted on 'portbase' and not 'portbase+1' as per the SHOUTcast 1.x protocol specification which makes it possible for all sources (1.x and 2.x) to be accepted on a single port instead of needing two ports (see documentation for details and limitations of this mode)<br><br></li>
+
+<li>Changed authhash management to improve integration with the Radionomy platform and services now being offered for SHOUTcast broadcasters</li>
+<li>Changed the default CSS / HTML output to adjustements to work better on mobile devices / small screens including consolidating and removing some of the information on the summary pages</li>
+<li>Changed the YP update to be able to do a full re-add of the stream on update incase of YP-side issues on add</li>
+<li>Changed the YP update handling to be more dynamic to aid with remote clustering fixes</li>
+<li>Changed to use a new scheduler which allows the server to be more flexible and allows the rate limiting support to work correctly</li>
+<li>Changed to require a key press if running normally (non-daemon and non-service modes) when a major issue occurs of the server cannot be run</li>
+<li>Changed 1.x source handling to check the password earlier in the connection steps which allows for quicker checking and setup of the source or rejection as applicable</li>
+<li>Changed the the existing playing and admin metadata responses to include extended metadata (if available)</li>
+<li>Changed the tailing mode to match the 1.x DNAS so it will now only show the log output from when opening the tailing view</li>
+<li>Changed title update to clarify why certain title updates are being rejected</li>
+<li>Changed the way that advert triggers are detected and processed to increase the reliability of advert triggers being actioned</li>
+<li>Changed some of the page icons to appear more visible on dark backgrounds</li>
+<li>Changed log output to only show 'Terminating listeners...' if there are listeners</li>
+<li>Changed some more internal data sctructures to provide additional memory reductions on per-listener basis</li>
+<li>Changed applicable timeout handling to go through a common handler which now ensures that per-stream overrides on the timeouts are correctly applied</li>
+<li>Changed to indicate CDN mode on backup relay connections</li>
+<li>Changed the internal handling of the config items to better handle large stream ids so as to save memory if not using sequential streamids (which speeds up config handling as well as potentially saving a lot of memory)</li>
+<li>Changed to check and abort starting the DNAS if no source passwords are specified</li>
+<li>Changed some of the log start-up wording messages</li>
+<li>Changed the Flash Policy Server to generate the response immediately to reduce time to provide a response</li>
+<li>Changed to not check for &lt;policy-file-request/&gt; if the Flash Policy Server is not enabled on the port</li>
+<li>Changed the HTTP handler to reduce the time to process requests when first processing the request</li>
+<li>Changed to show the bitrate of the skipped files to help with diagnosing why a file was skipped</li>
+<li>Changed handling of relay and direct 1.x sources to improve consistency between them and reduce the time to start a relay connection</li>
+<li>Changed the 2.x relay handling to reduce time to setup the relay connection as well as reducing memory for the connection setup</li>
+<li>Changed file / advert checking to also check the samplerate to improve reliabity of file / advert inserts</li>
+<li>Changed the stream login / logout options to have 'Stream' in front of them to make it clearer vs the main Server actions</li>
+<li>Changed to look for SSLv2 / SSLv3 / TLSv1.x connections and abort them as we do not support HTTPS connections and this was causing false source connection attempts</li>
+<li>Changed debugging output to make it easier to see the full filepath of the control files being used</li>
+<li>Changed when the YP 'add' is issued to prevent it spamming the metrics system if the connnection quickly fails (e.g. when running a relay that cannot connect to the source)</li>
+<li>Changed SHOUTcast 1.x and HTTP listener connection handling to be done separately which allows us to provide an optimised HTTP experience than the prior shared handling</li>
+<li>Changed the debugging options admin page to make it easier to enable groups of options and find other related usage changes</li>
+<li>Changed the help / documentation links to use a more complete page which better details information</li>
+<li>Changed the Windows version to make use of a modified pthread-win32 to make internal handling more consistent between OS platforms</li>
+<li>Changed the 'kick all' button to span across all of 'kick' actions and to respond to clicks anywhere in the element</li>
+<li>Changed the advert status to now be in it's own column instead of being in the 'connected duration' column</li>
+<li>Changed the 'sources' page to show the direct stream urls of the configured streams</li>
+<li>Changed error message output to be more consistent between the platform versions</li>
+<li>Changed Windows Vista+ usage to better scale for larger listener numbers compared to using the Windows XP and prior mode</li>
+<li>Changed the listener duration output to be a more condensed version (more like the 1.x DNAS which is better for mobile)</li>
+<li>Changed the ultravox creation to reduce the processing overhead when creating such data</li>
+<li>Changed admin.cgi?mode=history to provide XML and JSON responses like the /played(.html) method can provide</li>
+<li>Changed to ignore empty icy-icq, icy-irc and icy-aim headers which some older sources send and which could cause the source to be incorrectly rejected</li>
+<li>Changed to allow empty icy-url headers to improve legacy source connection support</li>
+<li>Changed the stream admin page to load the current listener list asynchronously instead of waiting for all of the details to load at once</li>
+<li>Changed the HTML5 player on the DNAS pages to force http mode</li>
+<li>Changed the HTML5 player on the DNAS pages to be hidden if the browser being used does not support such playback of the stream(s)</li>
+<li>Changed to use HTTPS for all communication the DNAS needs to make</li>
+<li>Changed to show the user agent in the banned connection log messages</li>
+<li>Changed to not save 'streamid' when re-writing or editing the config file as the DNAS is able to work this out without needing the option to be present (unlike with older 2.x releases)</li>
+<li>Changed to about direct source connections earlier on if the source password is incorrect than was previously being done<br><br></li>
+
+<li>Fixed handling of XML title updates with escaped characters leading to unexpected title update failures</li>
+<li>Fixed issues with excessive CPU usage due to connections to the DNAS not having enough data ready to be provided or received</li>
+<li>Fixed unexpected CPU usage when under low or no listener load (most noticeable on resource limited setups)</li>
+<li>Fixed all reproducible memory and object leaks (mainly against the advert implementation)</li>
+<li>Fixed the wrong streampath being used if the streampath config option is set but is left empty</li>
+<li>Fixed streampath generation for the HTML5 player on the DNAS pages and for any listener / playlist requests (to improve listener / player compatibility)</li>
+<li>Fixed Roku playback issues (affects 2.4.x)</li>
+<li>Fixed Winamp 5.6+ playback issues (affects 2.4.7)</li>
+<li>Fixed peaklisteners not being shown when there are no active listeners on the server admin page</li>
+<li>Fixed metrics handling issues which were causing corrupted reponses to be sent (breaking account statistics)</li>
+<li>Fixed advert updates being re-tried too often and not following the server side update interval</li>
+<li>Fixed advert update pulls failing randomly after the first pull attempt</li>
+<li>Fixed advert group not being updated in all cases for the existing listeners</li>
+<li>Fixed advert groups not being displayed on the admin page in all situations</li>
+<li>Fixed no message being shown on the advert groups if there are no known advert groups (affects 2.4.7)</li>
+<li>Fixed adverts for SHOUTcast 1.x listeners not always firing if no data could be sent</li>
+<li>Fixed lock-up for SHOUTcast 1.x listener when providing adverts and a title update needs to be sent</li>
+<li>Fixed invalid HTTP requests attempting to be handled as a source connection</li>
+<li>Fixed advert groups not being updated on the admin page unless some internal checks had been made</li>
+<li>Fixed issue with the updater repeatedly re-downloading the update (2.4.3 / 2.4.7 beta issue)</li>
+<li>Fixed /admin.cgi?mode=viewxml and /admin.cgi?mode=viewjson requests without a page parameter not being allowed for requests using the stream source password (resolves a 1.x DNAS compatibility issue)</li>
+<li>Fixed configuration file writing not saving correctly with non-sequential stream configurations</li>
+<li>Fixed default 'pidfile' generation not creating the file in the correct directory when run as a daemon (affects 2.4.x)</li>
+<li>Fixed some debug messages from showing when they should not appear in non-debug mode</li>
+<li>Fixed passwords containing the # character being incorrectly rejected due to the multi-1.x source support (affects 2.4.7)</li>
+<li>Fixed the edit config handler not being able to create the backup config file on Windows (affects 2.4.x)</li>
+<li>Fixed the receive and send buffers not being correctly limited in all cases to help prevent overflow issues</li>
+<li>Fixed some of the supporting resource methods not providing compressed version of the resource as needed</li>
+<li>Fixed ID3v1.x tags not being correctly stripped from intro / backup / adtest files</li>
+<li>Fixed streampath allowing /listen to be used which would cause failed stream playback as a playlist would be provided instead of the stream (due to /listen being a reserved url</li>
+<li>Fixed the YP connection tester causing listener add metrics requests to be sent</li>
+<li>Fixed a number of scenarios where aborting a pending source relay connection would not terminate correctly</li>
+<li>Fixed some path resolution issues where accented characters are in the file path</li>
+<li>Fixed listeners already connected to a stream before it has obtained information from the YP not being reported to the metrics system and not being applied to advert groups if applicable</li>
+<li>Fixed admincssfile not being re-loaded correctly on configuarion file reload</li>
+<li>Fixed random crash on accessing the log view</li>
+<li>Fixed random crash on closing when trying to write a log message and the logger has already been stopped</li>
+<li>Fixed error reporting if there is an issue with configuration file backup and edit actions</li>
+<li>Fixed HTTPS urls not being processed correctly causing broken urls on some of the server pages</li>
+<li>Fixed handling of 1.x sources and relays which do not provide bitrate information so it is now determined from the stream audio data as needed</li>
+<li>Fixed url reported when doing a YP url change not being correctly updated</li>
+<li>Fixed advert triggers not always working Ultravox and manual XML title updates</li>
+<li>Fixed AAC kbps calculations not being correct in some situations</li>
+<li>Fixed a number of streaming related issues if 'short sends' are occurring (which primarily could lead to skips and data loss)</li>
+<li>Fixed SHOUTcast 2.x sources reporting their received bandwidth total against SHOUTcast 2.x relays</li>
+<li>Fixed some issues with the user agent management page</li>
+<li>Fixed trying to ban listeners by user agent with an empty user agents not being handled correctly</li>
+<li>Fixed 'http://' being incorrectly added onto some of the 1.x style 'StreamUrl' metadata values</li>
+<li>Fixed a number of title update verification issues which were causing title corruption with extended character titles (affects 2.4.x)</li>
+<li>Fixed the configuration file re-write option not working correctly in some scenarios</li>
+<li>Fixed reported random locking issues being seen on some setups causing the DNAS to appear like it has crashed but is still running and just in a locked state<br><br></li>
+
+<li>Updated the streampath filtering</li>
+<li>Updated title filtering mappings</li>
+<li>Updated to the latest cacert.pem</li>
+<li>Updated to libcurl 7.47.1</li>
+<li>Updated to OpenSSL 1.0.2g<br><br></li>
+
+<li>Other code cleanup, minor bug fixes, re-ordering common cases to be checked first, processing reductions, page cleanups and anything else to improve stability, useability and responsiveness of the DNAS server</li>
+</ul>
+<p><br></p>
+
+<a name="256"></a><h3>2.4.7 Build 256</h3>
+<hr>
+<ul class="n">
 <li>Added multiple 1.x source client support - see the DNAS's 'View Source Connection Details' on the Server Summary page in the interim if needed for the password value to be used or http://wiki.winamp.com/wiki/SHOUTcast_Server_Source_Support</li>
 <li>Added ability for listeners to be provided the 'backupfile or 'streambackupfile' when no source connected (see documentation for usage)</li>
 <li>Added 'backuploop' and 'streambackuploop' options (default = 0 to keep looping) for controlling the number of consecutive backup file play loops</li>
@@ -86,7 +386,7 @@
 <li>Changed the ordering of the http page handling to detect commonly used pages a bit quicker (micro-optimisation)</li>
 <li>Changed the ordering of the http requests and checks done to speed up commonly accessed pages (in-addition to caching changes)</li>
 <li>Changed some of the curl instances to only be created when actually needed and to not be done for private stream instances</li>
-<li>Changed the advert title display on the song history page to make it clearer what is sent to the clients to make it clearer when an advert title trigger was received and what the listener is sent once its processed</li>
+<li>Changed the advert title display on the song history page to make it clearer what is sent to the clients and what the listener is sent once it's processed</li>
 <li>Changed the error messages when core authhash values are missing in the YP responses instead of showing a generic 400 error message</li>
 <li>Changed 'streampath' handling to filter some inappropriate values seen including self-referencing addresses</li>
 <li>Changed the flow of things in the HTTP request handling to reduce the processing time of such requests</li>
@@ -167,7 +467,7 @@
 <li>Removed the authhash removal action due to coming authhash management changes</li>
 <li>Removed 'email' functionality due to coming authhash management changes</li>
 <li>Removed SSLv2 and SSLv3 support in our OpenSSL and libcurl instances</li>
-<li>Remove direct use of gethostbyname(..)</li>
+<li>Removed direct use of gethostbyname(..)</li>
 <li>Removed AIM, IRC and ICQ support from the web pages and api responses (they have not been supported by the YP for a number of years)<br><br></li>
 
 <li>Other code cleanup, minor bug fixes, page cleanups and anything else to improve stability, useability and responsiveness of the server</li>
@@ -660,4 +960,4 @@
 <ul class="n">
 <li>First public release of the 2.x DNAS</li>
 </ul>
-<p><br></p>>
+<p><br></p>
