@@ -11,6 +11,7 @@ Vendor: phracker
 Categories:
 - web_framework
 - experimental
+- web_proxy
 Website: https://phracker.github.io
 Help-Topics:
   Getting Started: http://stackoverflow.com/questions/25460900/creating-a-scalable-shoutcast-solution-on-openshift
@@ -18,9 +19,16 @@ Provides:
 - Shoutcast-2.5
 - Shoutcast
 Publishes: 
+  publish-http-url:
+    Type: "NET_TCP:httpd-proxy-info"
+  publish-gear-endpoint:
+    Type: "NET_TCP:gear-endpoint-info"
 Subscribes:
   set-env:
     Type: ENV:*
+    Required: false
+  set-doc-url:
+    Type: "STRING:urlpath"
     Required: false
 Scaling:
   Min: 1
@@ -35,7 +43,6 @@ Endpoints:
   Protocols:
   - https
   - http
-  - tcp
   - ws
   Options:
     primary: true
@@ -60,10 +67,9 @@ Endpoints:
   - http
   - https
   - ws
-  - tcp
   Mappings:
   - Frontend: '/shoutcast'
     Backend: '/'
     Options:
       noproxy: true
-Source-Url: https://github.com/phracker/openshift-shoutcast-cartridge/archive/master.zip
+Source-Url: git://github.com/phracker/openshift-shoutcast-cartridge.git
