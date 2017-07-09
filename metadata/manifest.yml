@@ -41,7 +41,6 @@ Endpoints:
   Private-Port: 8080
   Public-Port-Name: PROXY_PORT
   Protocols:
-  - https
   - http
   - ws
   Options:
@@ -65,11 +64,10 @@ Endpoints:
   Public-Port-Name: SRC_PROXY
   Protocols:
   - http
-  - https
   - ws
   Mappings:
   - Frontend: '/shoutcast'
     Backend: '/'
     Options:
       noproxy: true
-Source-Url: git://github.com/phracker/openshift-shoutcast-cartridge.git
+Source-Url: https://github.com/phracker/openshift-shoutcast-cartridge.git
