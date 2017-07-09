@@ -51,6 +51,7 @@ read -d '' FileContent << "ENDREAD"
 maxuser=256
 publicserver=never
 requirestreamconfigs=1
+portlegacy=0
 
 ENDREAD
 	#srcip=any
