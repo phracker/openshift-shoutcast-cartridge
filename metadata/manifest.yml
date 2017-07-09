@@ -6,16 +6,16 @@ Version: '0.1'
 License: ASL 2.0
 License-Url: http://www.apache.org/licenses/LICENSE-2.0.txt
 Cartridge-Version: 0.0.10
-Cartridge-Vendor: theunknownartisthour
-Vendor: theunknownartisthour
+Cartridge-Vendor: phracker
+Vendor: phracker
 Categories:
 - web_framework
 - experimental
-Website: http://www.theunknownartisthour.com
+Website: https://phracker.github.io
 Help-Topics:
   Getting Started: http://stackoverflow.com/questions/25460900/creating-a-scalable-shoutcast-solution-on-openshift
 Provides:
-- Shoutcast-2.4
+- Shoutcast-2.5
 - Shoutcast
 Publishes: 
 Subscribes:
@@ -58,4 +58,4 @@ Endpoints:
     Backend: '/'
     Options:
       noproxy: true
-Source-Url: https://github.com/theunknownartisthour/openshift-shoutcast-cartridge/archive/master.zip
+Source-Url: https://github.com/phracker/openshift-shoutcast-cartridge/archive/master.zip
