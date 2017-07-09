@@ -24,7 +24,7 @@ Subscribes:
     Required: false
 Scaling:
   Min: 1
-  Max: -1
+  Max: 1
 Group-Overrides:
 - components:
 Endpoints:
@@ -33,7 +33,9 @@ Endpoints:
   Private-Port: 8080
   Public-Port-Name: PROXY_PORT
   Protocols:
+  - https
   - http
+  - tcp
   - ws
   Options:
     primary: true
@@ -46,13 +48,19 @@ Endpoints:
     Backend: ''
     Options:
       websocket: true
+  - Frontend: '/health'
+    Backend: ''
+    Options:
+      health: true
 - Private-IP-Name: SRC_IP
   Private-Port-Name: SRC_PORT
   Private-Port: 8080
   Public-Port-Name: SRC_PROXY
   Protocols:
   - http
+  - https
   - ws
+  - tcp
   Mappings:
   - Frontend: '/shoutcast'
     Backend: '/'
