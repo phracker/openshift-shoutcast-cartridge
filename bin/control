@@ -49,10 +49,8 @@ function start() {
 #should not handle any more than default max for haproxy (256)
 read -d '' FileContent << "ENDREAD"
 maxuser=256
-publicserver=default
+publicserver=never
 requirestreamconfigs=1
-publicport=80
-portlegacy=0
 
 ENDREAD
 	#srcip=any
@@ -79,7 +77,7 @@ ENDREAD
 		echo "streampassword_1=${OPENSHIFT_SCS_SHOUTCAST_STREAM_PASS}" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
 		
 		echo "portbase=${OPENSHIFT_SCS_PORT}" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
-		echo "destip=${OPENSHIFT_SCS_IP}" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
+		#echo "destip=${OPENSHIFT_SCS_IP}" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
 		#echo "srcip=${OPENSHIFT_SCS_SRC_IP}" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
 		echo "srcip=any" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
 		echo "publicip=${OPENSHIFT_APP_DNS}" >>${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_basic.conf
@@ -113,10 +111,10 @@ ENDREAD
 	client_result "Running sc_${SERVER_TYPE}.conf"
 	cp ${OPENSHIFT_SCS_SHOUTCAST_DIR}/sc_${SERVER_TYPE}.conf ${OPENSHIFT_SCS_SHOUTCAST_CONF}
 	#run the server
-	nohup ${OPENSHIFT_REPO_DIR}/server/sc_serv ${OPENSHIFT_SCS_SHOUTCAST_CONF} > ${OPENSHIFT_LOG_DIR}\shout.log 2>&1 &
+	nohup ${OPENSHIFT_REPO_DIR}/server/sc_serv ${OPENSHIFT_SCS_SHOUTCAST_CONF} > ${OPENSHIFT_LOG_DIR}/shout.log 2>&1 &
 	ps -ef | grep sc_serv | grep -v grep>jobline
 	job=`awk '{ print $2 }' jobline`
-	slog="$(<${OPENSHIFT_LOG_DIR}\shout.log)"
+	slog="$(<${OPENSHIFT_LOG_DIR}/shout.log)"
 	conflog=$(print_conf "TEST")
 	echo "$job" >${OPENSHIFT_SCS_SHOUTCAST_DIR}/stream.pid
 	rm -f jobline
